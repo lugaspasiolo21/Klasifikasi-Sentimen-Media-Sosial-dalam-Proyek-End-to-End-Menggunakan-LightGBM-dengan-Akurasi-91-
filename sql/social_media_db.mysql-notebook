@@ -1,0 +1,1116 @@
+{
+    "type": "MySQLNotebook",
+    "version": "1.0",
+    "caption": "DB Notebook",
+    "content": "\\about\nUSE social_media_db;\nSHOW TABLES;\nSELECT * FROM sentiments LIMIT 10;\nSELECT\n    CASE\n        WHEN category = '1' THEN 'Positif'\n        WHEN category = '0' THEN 'Netral'\n        WHEN category = '-1' THEN 'Negatif'\n        ELSE 'Tidak Diketahui'\n    END AS sentiment,\n    COUNT(*) AS jumlah_sentimen,\n    CONCAT(\n        ROUND(\n            (COUNT(*) * 100.0 / (SELECT COUNT(*) FROM sentiments WHERE category IN ('-1', '0', '1'))), 2\n        ), '%'\n    ) AS persentase\nFROM\n    sentiments\nWHERE\n    category IN ('-1', '0', '1')\nGROUP BY\n    sentiment\nORDER BY\n    jumlah_sentimen DESC;\n-- Kueri 2: Perbandingan Sentimen Antar Platform\nSELECT\n    platform,\n    CASE\n        WHEN category = '1' THEN 'Positif'\n        WHEN category = '0' THEN 'Netral'\n        WHEN category = '-1' THEN 'Negatif'\n        ELSE 'Tidak Diketahui'\n    END AS sentiment,\n    COUNT(*) AS jumlah_sentimen\nFROM\n    sentiments\nWHERE\n    category IN ('-1', '0', '1')\nGROUP BY\n    platform,\n    sentiment\nORDER BY\n    platform,\n    jumlah_sentimen DESC;\n-- Menemukan Teks Komentar yang Paling Sering Muncul\nSELECT\n    clean_text,\n    platform,\n    CASE\n        WHEN category = '1' THEN 'Positif'\n        WHEN category = '0' THEN 'Netral'\n        WHEN category = '-1' THEN 'Negatif'\n    END AS sentiment,\n    COUNT(*) AS jumlah_kemunculan\nFROM\n    sentiments\nWHERE\n    clean_text IS NOT NULL AND clean_text != '' -- Mengabaikan data kosong\nGROUP BY\n    clean_text, platform, sentiment\nORDER BY\n    jumlah_kemunculan DESC\nLIMIT 15; -- Menampilkan 15 komentar teratas\n-- Menganalisis Rata-rata Panjang Komentar Berdasarkan Sentimen\nSELECT\n    platform,\n    CASE\n        WHEN category = '1' THEN 'Positif'\n        WHEN category = '0' THEN 'Netral'\n        WHEN category = '-1' THEN 'Negatif'\n    END AS sentiment,\n    -- Menghitung rata-rata jumlah karakter\n    ROUND(AVG(LENGTH(clean_text))) AS rata_rata_panjang_karakter\nFROM\n    sentiments\nWHERE\n    category IN ('-1', '0', '1')\nGROUP BY\n    platform, sentiment\nORDER BY\n    platform, rata_rata_panjang_karakter DESC;\n-- Memeriksa Kualitas Data (Komentar Kosong)\nSELECT\n    platform,\n    COUNT(*) AS jumlah_total_data,\n    -- Menghitung jumlah baris dimana 'clean_text' kosong atau NULL\n    SUM(CASE WHEN clean_text IS NULL OR clean_text = '' THEN 1 ELSE 0 END) AS jumlah_komentar_kosong\nFROM\n    sentiments\nGROUP BY\n    platform;\n",
+    "options": {
+        "tabSize": 4,
+        "indentSize": 4,
+        "insertSpaces": true,
+        "defaultEOL": "LF",
+        "trimAutoWhitespace": true
+    },
+    "viewState": {
+        "cursorState": [
+            {
+                "inSelectionMode": false,
+                "selectionStart": {
+                    "lineNumber": 93,
+                    "column": 1
+                },
+                "position": {
+                    "lineNumber": 93,
+                    "column": 1
+                }
+            }
+        ],
+        "viewState": {
+            "scrollLeft": 0,
+            "firstPosition": {
+                "lineNumber": 79,
+                "column": 1
+            },
+            "firstPositionDeltaTop": -12
+        },
+        "contributionsState": {
+            "editor.contrib.folding": {},
+            "editor.contrib.wordHighlighter": false
+        }
+    },
+    "contexts": [
+        {
+            "state": {
+                "start": 1,
+                "end": 1,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "content": "Welcome to the MySQL Shell - DB Notebook.\n\nPress Ctrl+Enter to execute the code block.\n\nExecute \\sql to switch to SQL, \\js to JavaScript and \\ts to TypeScript mode.\nExecute \\help or \\? for help;",
+                            "language": "ansi"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 6
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 2,
+                "end": 2,
+                "language": "mysql",
+                "result": {
+                    "type": "text",
+                    "text": [
+                        {
+                            "type": 2,
+                            "index": 0,
+                            "resultId": "690b8610-72f7-4373-b09e-185deb786ec6",
+                            "content": "OK, 0 records retrieved in 0.371ms"
+                        }
+                    ]
+                },
+                "currentHeight": 28,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 20
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 20,
+                            "length": 0
+                        },
+                        "contentStart": 19,
+                        "state": 3
+                    }
+                ]
+            },
+            "data": []
+        },
+        {
+            "state": {
+                "start": 3,
+                "end": 3,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "793ddf52-86e1-4898-e4d7-d1d8b7609e62"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 12
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "4433e25d-cafa-43e7-f1a4-305596e7cc4c",
+                    "resultId": "793ddf52-86e1-4898-e4d7-d1d8b7609e62",
+                    "rows": [
+                        {
+                            "0": "sentiments"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "Tables_in_social_media_db",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 1 record retrieved in 0.565ms"
+                    },
+                    "totalRowCount": 1,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SHOW TABLES",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 4,
+                "end": 4,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "1887d96f-4fdb-4072-f322-a6513770481d"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 34
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "4433e25d-cafa-43e7-f1a4-305596e7cc4c",
+                    "resultId": "1887d96f-4fdb-4072-f322-a6513770481d",
+                    "rows": [
+                        {
+                            "0": 1,
+                            "1": "when modi promised “minimum government maximum governance” expected him begin the difficult job reforming the state why does take years get justice state should and not business and should exit psus and temples",
+                            "2": "-1",
+                            "3": "Twitter"
+                        },
+                        {
+                            "0": 2,
+                            "1": "talk all the nonsense and continue all the drama will vote for modi ",
+                            "2": "0",
+                            "3": "Twitter"
+                        },
+                        {
+                            "0": 3,
+                            "1": "what did just say vote for modi  welcome bjp told you rahul the main campaigner for modi think modi should just relax",
+                            "2": "1",
+                            "3": "Twitter"
+                        },
+                        {
+                            "0": 4,
+                            "1": "asking his supporters prefix chowkidar their names modi did great service now there confusion what read what not now crustal clear what will crass filthy nonsensical see how most abuses are coming from chowkidars",
+                            "2": "1",
+                            "3": "Twitter"
+                        },
+                        {
+                            "0": 5,
+                            "1": "answer who among these the most powerful world leader today trump putin modi may ",
+                            "2": "1",
+                            "3": "Twitter"
+                        },
+                        {
+                            "0": 6,
+                            "1": "kiya tho refresh maarkefir comment karo ",
+                            "2": "0",
+                            "3": "Twitter"
+                        },
+                        {
+                            "0": 7,
+                            "1": "surat women perform yagna seeks divine grace for narendra modi become again\n",
+                            "2": "0",
+                            "3": "Twitter"
+                        },
+                        {
+                            "0": 8,
+                            "1": "this comes from cabinet which has scholars like modi smriti and hema time introspect",
+                            "2": "0",
+                            "3": "Twitter"
+                        },
+                        {
+                            "0": 9,
+                            "1": "with upcoming election india saga going important pair look current modi leads govt elected with deal brexit combination this weekly looks juicy bears imho ",
+                            "2": "1",
+                            "3": "Twitter"
+                        },
+                        {
+                            "0": 10,
+                            "1": "gandhi was gay does modi  ",
+                            "2": "1",
+                            "3": "Twitter"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "id",
+                            "field": "0",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": true,
+                            "nullable": false,
+                            "autoIncrement": true
+                        },
+                        {
+                            "title": "clean_text",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": true,
+                            "autoIncrement": false,
+                            "default": "NULL"
+                        },
+                        {
+                            "title": "category",
+                            "field": "2",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": true,
+                            "autoIncrement": false,
+                            "default": "NULL"
+                        },
+                        {
+                            "title": "platform",
+                            "field": "3",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": true,
+                            "autoIncrement": false,
+                            "default": "NULL"
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 10 records retrieved in 0.852ms"
+                    },
+                    "totalRowCount": 10,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT * FROM sentiments LIMIT 10",
+                    "updatable": true,
+                    "fullTableName": "sentiments"
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 5,
+                "end": 25,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "ca985946-c02e-4425-ba33-53e86498212a"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 514
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "4433e25d-cafa-43e7-f1a4-305596e7cc4c",
+                    "resultId": "ca985946-c02e-4425-ba33-53e86498212a",
+                    "rows": [
+                        {
+                            "0": "Positif",
+                            "1": 88074,
+                            "2": "43.99%"
+                        },
+                        {
+                            "0": "Netral",
+                            "1": 68344,
+                            "2": "34.14%"
+                        },
+                        {
+                            "0": "Negatif",
+                            "1": 43782,
+                            "2": "21.87%"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "sentiment",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "jumlah_sentimen",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "persentase",
+                            "field": "2",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 3 records retrieved in 374.074ms"
+                    },
+                    "totalRowCount": 3,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "SELECT\n    CASE\n        WHEN category = '1' THEN 'Positif'\n        WHEN category = '0' THEN 'Netral'\n        WHEN category = '-1' THEN 'Negatif'\n        ELSE 'Tidak Diketahui'\n    END AS sentiment,\n    COUNT(*) AS jumlah_sentimen,\n    CONCAT(\n        ROUND(\n            (COUNT(*) * 100.0 / (SELECT COUNT(*) FROM sentiments WHERE category IN ('-1', '0', '1'))), 2\n        ), '%'\n    ) AS persentase\nFROM\n    sentiments\nWHERE\n    category IN ('-1', '0', '1')\nGROUP BY\n    sentiment\nORDER BY\n    jumlah_sentimen DESC",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 26,
+                "end": 45,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "e12d9ef4-5044-46de-ecfc-212050183d00"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 437
+                        },
+                        "contentStart": 49,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "4433e25d-cafa-43e7-f1a4-305596e7cc4c",
+                    "resultId": "e12d9ef4-5044-46de-ecfc-212050183d00",
+                    "rows": [
+                        {
+                            "0": "Reddit",
+                            "1": "Positif",
+                            "2": 15824
+                        },
+                        {
+                            "0": "Reddit",
+                            "1": "Netral",
+                            "2": 13133
+                        },
+                        {
+                            "0": "Reddit",
+                            "1": "Negatif",
+                            "2": 8272
+                        },
+                        {
+                            "0": "Twitter",
+                            "1": "Positif",
+                            "2": 72250
+                        },
+                        {
+                            "0": "Twitter",
+                            "1": "Netral",
+                            "2": 55211
+                        },
+                        {
+                            "0": "Twitter",
+                            "1": "Negatif",
+                            "2": 35510
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "platform",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "sentiment",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "jumlah_sentimen",
+                            "field": "2",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 6 records retrieved in 306.113ms"
+                    },
+                    "totalRowCount": 6,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- Kueri 2: Perbandingan Sentimen Antar Platform\nSELECT\n    platform,\n    CASE\n        WHEN category = '1' THEN 'Positif'\n        WHEN category = '0' THEN 'Netral'\n        WHEN category = '-1' THEN 'Negatif'\n        ELSE 'Tidak Diketahui'\n    END AS sentiment,\n    COUNT(*) AS jumlah_sentimen\nFROM\n    sentiments\nWHERE\n    category IN ('-1', '0', '1')\nGROUP BY\n    platform,\n    sentiment\nORDER BY\n    platform,\n    jumlah_sentimen DESC",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 46,
+                "end": 64,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "9541829e-8a68-4226-faf5-0c494c1012a5",
+                        "776a4a7a-10ad-430b-e4b3-75b5a78f273b"
+                    ]
+                },
+                "currentHeight": 36,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 475
+                        },
+                        "contentStart": 53,
+                        "state": 0
+                    },
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 475,
+                            "length": 35
+                        },
+                        "contentStart": 475,
+                        "state": 1
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "4433e25d-cafa-43e7-f1a4-305596e7cc4c",
+                    "resultId": "9541829e-8a68-4226-faf5-0c494c1012a5",
+                    "rows": [
+                        {
+                            "0": "yes ",
+                            "1": "Reddit",
+                            "2": "Netral",
+                            "3": 14
+                        },
+                        {
+                            "0": "wtf ",
+                            "1": "Reddit",
+                            "2": "Negatif",
+                            "3": 11
+                        },
+                        {
+                            "0": "lol",
+                            "1": "Reddit",
+                            "2": "Positif",
+                            "3": 9
+                        },
+                        {
+                            "0": "source ",
+                            "1": "Reddit",
+                            "2": "Netral",
+                            "3": 8
+                        },
+                        {
+                            "0": " jpg",
+                            "1": "Reddit",
+                            "2": "Netral",
+                            "3": 7
+                        },
+                        {
+                            "0": ",0",
+                            "1": "Reddit",
+                            "2": null,
+                            "3": 7
+                        },
+                        {
+                            "0": "wow",
+                            "1": "Reddit",
+                            "2": "Positif",
+                            "3": 6
+                        },
+                        {
+                            "0": "nice ",
+                            "1": "Reddit",
+                            "2": "Positif",
+                            "3": 6
+                        },
+                        {
+                            "0": " cms",
+                            "1": "Reddit",
+                            "2": "Netral",
+                            "3": 6
+                        },
+                        {
+                            "0": "top kek ",
+                            "1": "Reddit",
+                            "2": "Positif",
+                            "3": 5
+                        },
+                        {
+                            "0": "thanks ",
+                            "1": "Reddit",
+                            "2": "Positif",
+                            "3": 5
+                        },
+                        {
+                            "0": "why ",
+                            "1": "Reddit",
+                            "2": "Netral",
+                            "3": 4
+                        },
+                        {
+                            "0": "what ",
+                            "1": "Reddit",
+                            "2": "Netral",
+                            "3": 4
+                        },
+                        {
+                            "0": "disgusting",
+                            "1": "Reddit",
+                            "2": "Negatif",
+                            "3": 4
+                        },
+                        {
+                            "0": "good ",
+                            "1": "Reddit",
+                            "2": "Positif",
+                            "3": 4
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "clean_text",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "platform",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "sentiment",
+                            "field": "2",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "jumlah_kemunculan",
+                            "field": "3",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 15 records retrieved in 2.010333776473999s"
+                    },
+                    "totalRowCount": 15,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- Menemukan Teks Komentar yang Paling Sering Muncul\nSELECT\n    clean_text,\n    platform,\n    CASE\n        WHEN category = '1' THEN 'Positif'\n        WHEN category = '0' THEN 'Netral'\n        WHEN category = '-1' THEN 'Negatif'\n    END AS sentiment,\n    COUNT(*) AS jumlah_kemunculan\nFROM\n    sentiments\nWHERE\n    clean_text IS NOT NULL AND clean_text != '' -- Mengabaikan data kosong\nGROUP BY\n    clean_text, platform, sentiment\nORDER BY\n    jumlah_kemunculan DESC\nLIMIT 15",
+                    "updatable": false,
+                    "fullTableName": ""
+                },
+                {
+                    "tabId": "4433e25d-cafa-43e7-f1a4-305596e7cc4c",
+                    "resultId": "776a4a7a-10ad-430b-e4b3-75b5a78f273b",
+                    "rows": [],
+                    "executionInfo": {
+                        "text": "OK, 0 records retrieved in 0.385ms"
+                    },
+                    "totalRowCount": 0,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 1,
+                    "sql": " -- Menampilkan 15 komentar teratas",
+                    "updatable": false
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 65,
+                "end": 82,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "3bf8a1e4-368b-4f97-ccc7-7c760ee29c4b"
+                    ]
+                },
+                "currentHeight": 209.796875,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 501
+                        },
+                        "contentStart": 64,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "4433e25d-cafa-43e7-f1a4-305596e7cc4c",
+                    "resultId": "3bf8a1e4-368b-4f97-ccc7-7c760ee29c4b",
+                    "rows": [
+                        {
+                            "0": "Reddit",
+                            "1": "Positif",
+                            "2": "265"
+                        },
+                        {
+                            "0": "Reddit",
+                            "1": "Negatif",
+                            "2": "215"
+                        },
+                        {
+                            "0": "Reddit",
+                            "1": "Netral",
+                            "2": "61"
+                        },
+                        {
+                            "0": "Twitter",
+                            "1": "Negatif",
+                            "2": "148"
+                        },
+                        {
+                            "0": "Twitter",
+                            "1": "Positif",
+                            "2": "141"
+                        },
+                        {
+                            "0": "Twitter",
+                            "1": "Netral",
+                            "2": "89"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "platform",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "sentiment",
+                            "field": "1",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "rata_rata_panjang_karakter",
+                            "field": "2",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 6 records retrieved in 572.27ms"
+                    },
+                    "totalRowCount": 6,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- Menganalisis Rata-rata Panjang Komentar Berdasarkan Sentimen\nSELECT\n    platform,\n    CASE\n        WHEN category = '1' THEN 'Positif'\n        WHEN category = '0' THEN 'Netral'\n        WHEN category = '-1' THEN 'Negatif'\n    END AS sentiment,\n    -- Menghitung rata-rata jumlah karakter\n    ROUND(AVG(LENGTH(clean_text))) AS rata_rata_panjang_karakter\nFROM\n    sentiments\nWHERE\n    category IN ('-1', '0', '1')\nGROUP BY\n    platform, sentiment\nORDER BY\n    platform, rata_rata_panjang_karakter DESC",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 83,
+                "end": 92,
+                "language": "mysql",
+                "result": {
+                    "type": "resultIds",
+                    "list": [
+                        "3be666aa-b322-4518-8fa3-323f2e259af4"
+                    ]
+                },
+                "currentHeight": 114.59375,
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 312
+                        },
+                        "contentStart": 45,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": [
+                {
+                    "tabId": "4433e25d-cafa-43e7-f1a4-305596e7cc4c",
+                    "resultId": "3be666aa-b322-4518-8fa3-323f2e259af4",
+                    "rows": [
+                        {
+                            "0": "Reddit",
+                            "1": 37249,
+                            "2": "220"
+                        },
+                        {
+                            "0": "Twitter",
+                            "1": 162973,
+                            "2": "2"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "title": "platform",
+                            "field": "0",
+                            "dataType": {
+                                "type": 17,
+                                "characterMaximumLength": 65535,
+                                "flags": [
+                                    "BINARY",
+                                    "ASCII",
+                                    "UNICODE"
+                                ],
+                                "needsQuotes": true,
+                                "parameterFormatType": "OneOrZero"
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "jumlah_total_data",
+                            "field": "1",
+                            "dataType": {
+                                "type": 4,
+                                "flags": [
+                                    "SIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 10,
+                                "parameterFormatType": "OneOrZero",
+                                "synonyms": [
+                                    "INTEGER",
+                                    "INT4"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        },
+                        {
+                            "title": "jumlah_komentar_kosong",
+                            "field": "2",
+                            "dataType": {
+                                "type": 10,
+                                "flags": [
+                                    "UNSIGNED",
+                                    "ZEROFILL"
+                                ],
+                                "numericPrecision": 65,
+                                "numericScale": 30,
+                                "parameterFormatType": "TwoOrOneOrZero",
+                                "synonyms": [
+                                    "FIXED",
+                                    "NUMERIC",
+                                    "DEC"
+                                ]
+                            },
+                            "inPK": false,
+                            "nullable": false,
+                            "autoIncrement": false
+                        }
+                    ],
+                    "executionInfo": {
+                        "text": "OK, 2 records retrieved in 450.662ms"
+                    },
+                    "totalRowCount": 2,
+                    "hasMoreRows": false,
+                    "currentPage": 0,
+                    "index": 0,
+                    "sql": "-- Memeriksa Kualitas Data (Komentar Kosong)\nSELECT\n    platform,\n    COUNT(*) AS jumlah_total_data,\n    -- Menghitung jumlah baris dimana 'clean_text' kosong atau NULL\n    SUM(CASE WHEN clean_text IS NULL OR clean_text = '' THEN 1 ELSE 0 END) AS jumlah_komentar_kosong\nFROM\n    sentiments\nGROUP BY\n    platform",
+                    "updatable": false,
+                    "fullTableName": ""
+                }
+            ]
+        },
+        {
+            "state": {
+                "start": 93,
+                "end": 93,
+                "language": "mysql",
+                "currentSet": 1,
+                "statements": [
+                    {
+                        "delimiter": ";",
+                        "span": {
+                            "start": 0,
+                            "length": 0
+                        },
+                        "contentStart": 0,
+                        "state": 0
+                    }
+                ]
+            },
+            "data": []
+        }
+    ]
+}
